@@ -8,7 +8,6 @@ public class Node {
 
   /** Create new node with specified data
       Have it reference null
-      test
       @param newItem is data to added to new node
   */
   public Node(Object newItem) {
