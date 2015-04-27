@@ -12,9 +12,8 @@ public class WarFrame extends JFrame {
 	
 	private JButton playCard, quit;
 	private JLabel actionInfo, clickToChange, enemyCard,
-	enemyPlayed, cardPlayed;
-	private CardButton cardButton;
-	private ImageIcon alwaysEnemy, enemyCardPlayed, yourCardPlayed;
+	enemyPlayed, cardPlayed, yourCard;
+	private ImageIcon backCard, enemyCardPlayed, yourCardPlayed;
 	private Deck yourDeck, theirDeck;
 	private War war;
 	private final int YOU_WIN = 1,
@@ -61,55 +60,75 @@ public class WarFrame extends JFrame {
 		
 		// Create player panel and add items,
 		// add to southern area
-		cardButton = new CardButton(playerDeck);
-		panelHolder[3][1].add(cardButton);
-		clickToChange = new JLabel("Click card to see others in your deck.");
-		panelHolder[3][1].add(clickToChange);
+		backCard = new ImageIcon(backOfCard);
+		yourCard = new JLabel(backCard);
+		panelHolder[3][1].add(yourCard);
 		
 		// Create enemy panel and add items,
 		// add to northern area
-		alwaysEnemy = new ImageIcon(backOfCard);
-		enemyCard = new JLabel(alwaysEnemy);
+		enemyCard = new JLabel(backCard);
 		panelHolder[0][1].add(enemyCard);
 		
 		// Add label for what to do, add to western area
 		actionInfo = new JLabel("Press 'Play card' to play a card");
 		panelHolder[2][2].add(actionInfo);
 		
-		// Add center items to show cards
-		enemyCardPlayed = new ImageIcon(backOfCard);
-		enemyPlayed = new JLabel(enemyCardPlayed);
+		// Add center items to show card
+		enemyPlayed = new JLabel();
 		panelHolder[1][1].add(enemyPlayed);
-		yourCardPlayed = new ImageIcon(backOfCard);
-		cardPlayed = new JLabel(yourCardPlayed);
+		cardPlayed = new JLabel();
 		panelHolder[2][1].add(cardPlayed);
 	}
 
 	// handle button events
 	public class PlayListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			ImageIcon cardImage = yourDeck.showTop().getCardImg();
-			cardPlayed.setIcon(cardImage);
-			ImageIcon enemyImage = theirDeck.showTop().getCardImg();
-			enemyPlayed.setIcon(enemyImage);
-			if ((war.matchWin(yourDeck, theirDeck)) == YOU_WIN) {
-				actionInfo.setText("You win the round. Play another card.");
-			}
-			else if ((war.matchWin(yourDeck, theirDeck)) == THEY_WIN) {
-				actionInfo.setText("Enemy wins the round. Play another card."); 
-			}
-			else if ((war.matchWin(yourDeck, theirDeck)) == TIE) {
-				actionInfo.setText("WAR!");
-				war.warPlay(yourDeck, theirDeck);
-			}
-		}
-	}
+			try {
+				ImageIcon cardImage = yourDeck.showTop().getCardImg();
+				cardPlayed.setIcon(cardImage);
+				ImageIcon enemyImage = theirDeck.showTop().getCardImg();
+				enemyPlayed.setIcon(enemyImage);
+				if ((war.matchWin(yourDeck, theirDeck)) == YOU_WIN) {
+					if (war.winner(yourDeck, theirDeck) == YOU_WIN) {
+						actionInfo.setText("The oppenent is out of cards...");
+						Thread.sleep(4000);
+						actionInfo.setText("YOU WIN! Thanks for playing!");
+						Thread.sleep(4000);
+					}
+					else if (war.winner(yourDeck, theirDeck) == THEY_WIN) {
+						actionInfo.setText("You are out of cards...");
+						Thread.sleep(4000);
+						actionInfo.setText("YOU LOSE! Play again!");
+						Thread.sleep(4000);
+					}
+					actionInfo.setText("You win the round. Play another card.");
+				}
+				else if ((war.matchWin(yourDeck, theirDeck)) == THEY_WIN) {
+					actionInfo.setText("Enemy wins the round. Play another card."); 
+				}
+				else if ((war.matchWin(yourDeck, theirDeck)) == TIE) {
+					actionInfo.setText("WAR!");
+					war.warPlay(yourDeck, theirDeck);
+				}
+			} // end try
+			catch (Exception f) {
+				System.exit(0);
+			} // end catch
+		} // end method
+	} // end class
 	
 	public class QuitListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			cardButton.setEnabled(false);
-			playCard.setEnabled(false);
-			actionInfo.setText("GAME OVER");
+			try {
+				quit.setEnabled(false);
+				playCard.setEnabled(false);
+				actionInfo.setText("GAME OVER");
+				Thread.sleep(4000);
+				System.exit(0);
+			}
+			catch (Exception f) {
+				System.exit(0);
+			}
 		}
 	}
 }

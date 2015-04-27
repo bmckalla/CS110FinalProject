@@ -8,7 +8,7 @@ public class War {
 			times = 2,
 			winner = TIE;
 	
-	public int Winner(Deck yourDeck, Deck theirDeck) {
+	public int winner(Deck yourDeck, Deck theirDeck) {
 		if (yourDeck.getSize() == 0)
 			winner = THEY_WIN;
 		else if (theirDeck.getSize() == 0) 
