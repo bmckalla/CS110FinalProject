@@ -11,14 +11,15 @@ import java.awt.event.*;
 public class WarFrame extends JFrame {
 	
 	private JButton playCard, quit;
-	private JLabel actionInfo, clickToChange, enemyCard,
-	enemyPlayed, cardPlayed, yourCard;
-	private ImageIcon backCard, enemyCardPlayed, yourCardPlayed;
+	private JLabel actionInfo, enemyCard,
+	enemyPlayed, cardPlayed, yourCard, yourLabel, theirLabel;
+	private ImageIcon backCard;
 	private Deck yourDeck, theirDeck;
 	private War war;
 	private final int YOU_WIN = 1,
 			THEY_WIN = 2,
 			TIE = 0;
+	private int yourScore, theirScore;
 	
 	public WarFrame(Deck playerDeck, Deck enemyDeck, War warGame) {
 		String backOfCard = "back.jpg";
@@ -73,6 +74,14 @@ public class WarFrame extends JFrame {
 		actionInfo = new JLabel("Press 'Play card' to play a card");
 		panelHolder[2][2].add(actionInfo);
 		
+		// Add label for your number of cards and opponents number of cards
+		yourScore = yourDeck.getSize();
+		theirScore = theirDeck.getSize();
+		yourLabel = new JLabel("Cards left: " + yourScore);
+		panelHolder[3][0].add(yourLabel);
+		theirLabel = new JLabel("Cards left: " + theirScore);
+		panelHolder[0][0].add(theirLabel);
+		
 		// Add center items to show card
 		enemyPlayed = new JLabel();
 		panelHolder[1][1].add(enemyPlayed);
@@ -81,7 +90,7 @@ public class WarFrame extends JFrame {
 	}
 
 	// handle button events
-	public class PlayListener implements ActionListener {
+	public class PlayListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			try {
 				ImageIcon cardImage = yourDeck.showTop().getCardImg();
@@ -89,29 +98,26 @@ public class WarFrame extends JFrame {
 				ImageIcon enemyImage = theirDeck.showTop().getCardImg();
 				enemyPlayed.setIcon(enemyImage);
 				if ((war.matchWin(yourDeck, theirDeck)) == YOU_WIN) {
-					if (war.winner(yourDeck, theirDeck) == YOU_WIN) {
-						actionInfo.setText("The oppenent is out of cards...");
-						Thread.sleep(4000);
-						actionInfo.setText("YOU WIN! Thanks for playing!");
-						Thread.sleep(4000);
-					}
-					else if (war.winner(yourDeck, theirDeck) == THEY_WIN) {
-						actionInfo.setText("You are out of cards...");
-						Thread.sleep(4000);
-						actionInfo.setText("YOU LOSE! Play again!");
-						Thread.sleep(4000);
-					}
+					winner(yourDeck, theirDeck);
 					actionInfo.setText("You win the round. Play another card.");
 				}
 				else if ((war.matchWin(yourDeck, theirDeck)) == THEY_WIN) {
+					winner(yourDeck, theirDeck);
 					actionInfo.setText("Enemy wins the round. Play another card."); 
 				}
 				else if ((war.matchWin(yourDeck, theirDeck)) == TIE) {
 					actionInfo.setText("WAR!");
-					war.warPlay(yourDeck, theirDeck);
-				}
-			} // end try
-			catch (Exception f) {
+					if (war.warPlay(yourDeck, theirDeck) == YOU_WIN) {
+						winner(yourDeck, theirDeck);
+						actionInfo.setText("You win the round. Play another card.");
+					}
+					else if (war.warPlay(yourDeck, theirDeck) == THEY_WIN) {
+						winner(yourDeck, theirDeck);
+						actionInfo.setText("They win the round. Play another card.");
+					}
+				} //end if
+			} //end try
+			catch (InterruptedException f) {
 				System.exit(0);
 			} // end catch
 		} // end method
@@ -119,16 +125,22 @@ public class WarFrame extends JFrame {
 	
 	public class QuitListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			try {
 				quit.setEnabled(false);
 				playCard.setEnabled(false);
 				actionInfo.setText("GAME OVER");
-				Thread.sleep(4000);
-				System.exit(0);
-			}
-			catch (Exception f) {
-				System.exit(0);
-			}
+		}
+	}
+	
+	public void winner(Deck yourDeck, Deck theirDeck) throws InterruptedException {
+		if (war.winner(yourDeck, theirDeck) == YOU_WIN) {
+			actionInfo.setText("The oppenent is out of cards...");
+			Thread.sleep(4000);
+			actionInfo.setText("YOU WIN! Thanks for playing!");
+		}
+		else if (war.winner(yourDeck, theirDeck) == THEY_WIN) {
+			actionInfo.setText("You are out of cards...");
+			Thread.sleep(4000);
+			actionInfo.setText("YOU LOSE! Play again!");
 		}
 	}
 }

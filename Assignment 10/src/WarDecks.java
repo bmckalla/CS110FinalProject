@@ -4,9 +4,11 @@ public class WarDecks {
 	private Deck playerDeck, enemyDeck;
 	
 	public WarDecks() {
+		
+		Deck fullDeck = new Deck();
 		final int HIGH_RANK = 13,
 				DECK_SIZE = 52;
-		Deck fullDeck = new Deck();
+		
 		for (int x = 1; x <= HIGH_RANK; x++) {
 			Card spade = new Card(14, x);
 			fullDeck.addCard(spade);
@@ -17,6 +19,7 @@ public class WarDecks {
 			Card diamond = new Card(17, x);
 			fullDeck.addCard(diamond);
 		}
+		
 		fullDeck.shuffle();
 	    Deck yourDeck = new Deck();
 	    Deck theirDeck = new Deck();
@@ -26,7 +29,9 @@ public class WarDecks {
 	    	theirDeck.addCard(fullDeck.removeTop());
 	    }
 	    
+	    yourDeck.shuffle();
 		playerDeck = yourDeck;
+		theirDeck.shuffle();
 		enemyDeck = theirDeck;
 	}
 	
