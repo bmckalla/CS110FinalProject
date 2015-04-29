@@ -1,4 +1,7 @@
-
+/**
+ * @author Braden McKallagat
+ * War object for the card game, war
+ */
 public class War {
 	
 	private final int YOU_WIN = 1,
@@ -9,11 +12,20 @@ public class War {
 			winner = TIE;
 	private Deck yourDeck, theirDeck;
 	
+	/**
+	 * Constructor sets the player deck and enemy deck
+	 * @param playerDeck
+	 * @param enemyDeck
+	 */
 	public War(Deck playerDeck, Deck enemyDeck) {
 		yourDeck = new Deck(playerDeck);
 		theirDeck = new Deck(enemyDeck);
 	}
 	
+	/**
+	 * Determines the winner of the game
+	 * @return
+	 */
 	public int winner() {
 		if (yourDeck.getSize() == 0)
 			winner = THEY_WIN;
@@ -23,6 +35,11 @@ public class War {
 		return winner;
 	}
 	
+	/**
+	 * Determines the winner of the hand,
+	 * or if it was a tie (war)
+	 * @return
+	 */
 	public int matchWin() {
 		if (yourDeck.showTop().getRank() == 1 && theirDeck.showTop().getRank() > 1) {
 			yourDeck.addCard(yourDeck.getSize() - 1, theirDeck.removeTop());
@@ -50,6 +67,14 @@ public class War {
 		return winner;
 	}
 	
+	/**
+	 * Executes if hand is a tie.
+	 * Has a war card field that tells
+	 * which card should be compared in 
+	 * each deck. Times shows how many times
+	 * war has occurred. 
+	 * @return
+	 */
 	public int warPlay() {
 		if (theirDeck.showCard(warCard).getRank() > yourDeck.showCard(warCard).getRank()) {
 			for (int x = 0; x < times; x++) 
@@ -73,10 +98,18 @@ public class War {
 		return winner;
 	}
 	
+	/**
+	 * Getter returns the player deck
+	 * @return
+	 */
 	public Deck getYourDeck() {
 		return yourDeck;
 	}
 	
+	/**
+	 * Getter returns the enemy deck
+	 * @return
+	 */
 	public Deck getTheirDeck() {
 		return theirDeck;
 	}

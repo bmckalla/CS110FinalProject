@@ -3,6 +3,10 @@ import javax.swing.*;
 
 public class warTest {
 	
+	/**
+	 * Driver for the game as a well as the GUI WarFrame
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		WarDecks deck = new WarDecks();
 		Deck yourDeck = new Deck(deck.getYourDeck());

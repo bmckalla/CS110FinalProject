@@ -1,10 +1,22 @@
 import javax.swing.ImageIcon;
 
-
+/**
+ * @author Braden McKallagat
+ * Class extends the card class and adds 
+ * and a field for the card's image. 
+ */
 public class WarCard extends Card {
 	
 	private ImageIcon cardIcon;
 	
+	/**
+	 * Constructor takes in a suit and rank
+	 * and calls the super to create those fields.
+	 * It then determines which card picture to use
+	 * and sets that to the appopriate field.
+	 * @param suit
+	 * @param rank
+	 */
 	public WarCard(int suit, int rank) {
 		super(suit, rank);
 		
@@ -179,16 +191,25 @@ public class WarCard extends Card {
 		}
 	}
 	
+	/**
+	 * Returns the card's image.
+	 * @return
+	 */
 	public ImageIcon getCardImg() {
 		return cardIcon;
 	}
 	
+	/**
+	 * Compares WarCards
+	 * @param card
+	 * @return
+	 */
 	public boolean equals(WarCard card) {
-			if (this.equals(card)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+		if (this.equals(card)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

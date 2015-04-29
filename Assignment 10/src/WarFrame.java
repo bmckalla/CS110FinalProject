@@ -22,6 +22,10 @@ public class WarFrame extends JFrame {
 	private int yourScore, theirScore, 
 			warCard = 1;
 	
+	/**
+	 * Accepts the game as a parameter
+	 * @param warGame
+	 */
 	public WarFrame(War warGame) {
 		
 		war = warGame;
@@ -93,38 +97,22 @@ public class WarFrame extends JFrame {
 	// handle button events
 	public class PlayListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			try {
 				ImageIcon cardImage = yourDeck.showTop().getCardImg();
 				cardPlayed.setIcon(cardImage);
 				ImageIcon enemyImage = theirDeck.showTop().getCardImg();
 				enemyPlayed.setIcon(enemyImage);
-				if ((war.matchWin()) == YOU_WIN) {
-					resetDeck();
-					winner(yourDeck, theirDeck);
-					actionInfo.setText("You win the round. Play another card.");
-					resetGUI();
+				try {
+					matchWin();
 				}
-				else if ((war.matchWin()) == THEY_WIN) {
-					resetDeck();
-					winner(yourDeck, theirDeck);
-					actionInfo.setText("The enemy wins the round. Play another card."); 
-					resetGUI();
+				catch (InterruptedException f) {
+					System.exit(0);
 				}
-				else if ((war.matchWin()) == TIE) {
-					actionInfo.setText("WAR!");
-					playCard.setEnabled(false);
-					Thread.sleep(4000);
-					war();
-					playCard.setEnabled(true);
-					resetGUI();
-				} //end if
-			} //end try
-			catch (InterruptedException f) {
-				System.exit(0);
-			} // end catch
 		} // end method
 	} // end class
 	
+	/**
+	 * Button quits the game, disables all buttons
+	 */
 	public class QuitListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 				quit.setEnabled(false);
@@ -133,19 +121,49 @@ public class WarFrame extends JFrame {
 		}
 	}
 	
-	public void winner(Deck yourDeck, Deck theirDeck) throws InterruptedException {
+	/**
+	 * Determines the winner of the hand
+	 * @throws InterruptedException
+	 */
+	public void matchWin() throws InterruptedException {
+		if ((war.matchWin()) == YOU_WIN) {
+			resetDeck();
+			winner();
+			actionInfo.setText("You win the round. Play another card.");
+			resetGUI();
+		}
+		else if ((war.matchWin()) == THEY_WIN) {
+			resetDeck();
+			winner();
+			actionInfo.setText("The enemy wins the round. Play another card."); 
+			resetGUI();
+		}
+		else if ((war.matchWin()) == TIE) {
+			actionInfo.setText("WAR!");
+			war();
+			resetGUI();
+		} 
+	}
+	
+	/**
+	 * Determines the winner of the game
+	 * @throws InterruptedException
+	 */
+	public void winner() throws InterruptedException {
 		if (war.winner() == YOU_WIN) {
 			actionInfo.setText("The enemy is out of cards...");
-			Thread.sleep(4000);
 			actionInfo.setText("YOU WIN! Thanks for playing!");
 		}
 		else if (war.winner() == THEY_WIN) {
 			actionInfo.setText("You are out of cards...");
-			Thread.sleep(4000);
 			actionInfo.setText("YOU LOSE! Play again!");
 		}
 	}
 	
+	/**
+	 * If hand is a tie, executes this method
+	 * @throws InterruptedException
+	 */
 	public void war() throws InterruptedException {
 		ImageIcon cardImage = yourDeck.showCard(warCard).getCardImg();
 		cardPlayed.setIcon(cardImage);
@@ -154,13 +172,13 @@ public class WarFrame extends JFrame {
 		if (war.warPlay() == YOU_WIN) {
 			warCard = 1;
 			resetDeck();
-			winner(yourDeck, theirDeck);
+			winner();
 			actionInfo.setText("You win the war! Play another card.");
 		}
 		else if (war.warPlay() == THEY_WIN) {
 			warCard = 1;
 			resetDeck();
-			winner(yourDeck, theirDeck);
+			winner();
 			actionInfo.setText("The enemy wins the war! Play another card.");
 		}
 		else if (war.warPlay() == TIE) {
@@ -170,6 +188,9 @@ public class WarFrame extends JFrame {
 		}
 	}
 	
+	/**
+	 * Updates the number of cards in each deck
+	 */
 	public void resetGUI() {
 		yourDeck.setSize();
 		yourScore = yourDeck.getSize();
@@ -179,6 +200,10 @@ public class WarFrame extends JFrame {
 		theirLabel.setText("Cards left: " + theirScore);
 	}
 	
+	/**
+	 * Resets the decks so that they reflect what has 
+	 * occured in the war class
+	 */
 	public void resetDeck() {
 		yourDeck = new Deck(war.getYourDeck());
 		theirDeck = new Deck(war.getTheirDeck());

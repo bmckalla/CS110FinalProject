@@ -1,8 +1,17 @@
-
+/**
+ * @author Braden McKallagat
+ * Class creates a full deck and evenly splits
+ * said deck into two decks. Each deck is shuffled
+ * and random.
+ */
 public class WarDecks {
 	
 	private Deck playerDeck, enemyDeck;
 	
+	/**
+	 * Constructor creates two seperate, random decks.
+	 * Each with all 52 cards of a normal deck.
+	 */
 	public WarDecks() {
 		
 		Deck fullDeck = new Deck();
@@ -20,7 +29,7 @@ public class WarDecks {
 			fullDeck.addCard(diamond);
 		}
 		
-		 fullDeck.shuffle();
+		fullDeck.shuffle();
 	    Deck yourDeck = new Deck();
 	    Deck theirDeck = new Deck();
 	    
@@ -29,16 +38,24 @@ public class WarDecks {
 	    	theirDeck.addCard(fullDeck.removeTop());
 	    }
 	    
-	   yourDeck.shuffle();
+	    yourDeck.shuffle();
 		playerDeck = new Deck(yourDeck);
 		theirDeck.shuffle();
 		enemyDeck = new Deck(theirDeck);
 	}
 	
+	/**
+	 * Returns the deck for the player
+	 * @return
+	 */
 	public Deck getYourDeck() {
 		return playerDeck;
 	}
 	
+	/**
+	 * Returns the deck for the enemy
+	 * @return
+	 */
 	public Deck getTheirDeck() {
 		return enemyDeck;
 	}
