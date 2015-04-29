@@ -8,56 +8,67 @@
 import java.util.Random;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-
 public class Deck {
 	
 	private final int SIZE = 52;
-	private final ArrayList<Card> deck;
+	private final ArrayList<WarCard> deck;
 	private int deckSize;
 	
 	/**
-	 * !NOTE DOES NOT HAVE CORRECT RANK YET
-	 * ASK ABOUT PUBLIC CONSTANTS!
 	 * Instantiates a Deck of size 52 and 
-	 * creates cards to fill it. 
+	 * sets deck size.
 	 */
 	public Deck() {
-		deck = new ArrayList<Card>(SIZE);
+		deck = new ArrayList<WarCard>(SIZE);
 		deckSize = deck.size();
+	}
+	
+	public Deck(Deck newDeck) {
+		deckSize = newDeck.getSize();
+		deck = new ArrayList<WarCard>(deckSize);
+		for (int x = 0; x < deckSize; x++)
+			deck.add(newDeck.showCard(x));
+		this.setSize();
 	}
 	
 	public void shuffle() {
 		int size = deck.size();
 		for (int x = 0; x < size; x++) {
 			Random rand = new Random();
-			int random = rand.nextInt(deck.size());
-			Card temp = deck.remove(random);
+			int random = rand.nextInt(size);
+			WarCard temp = deck.remove(random);
 			deck.add(temp);
 		}
 	}
 	
-	public void addCard(Card card) {
+	public void addCard(WarCard card) {
 		deck.add(card);
+		this.setSize();
+	}
+	public void addCard(int index, WarCard card) {
+		deck.add(index, card);
+		this.setSize();
 	}
 	
-	public Card removeTop() {
-		Card top = deck.remove(0);
+	public WarCard removeTop() {
+		WarCard top = deck.remove(0);
+		this.setSize();
 		return top;
 	}
 	
-	public Card showTop() {
-		Card top = deck.get(0);
+	public WarCard showTop() {
+		WarCard top = deck.get(0);
 		return top;
 	}
 	
-	public Card removeCard(int x) {
-		Card card = deck.remove(x);
+	public WarCard removeCard(int x) {
+		WarCard card = deck.remove(x);
+		this.setSize();
 		return card;
 	}
 	
-	public Card showCard(int x) {
-		Card card = deck.get(x);
+	public WarCard showCard(int x) {
+		WarCard card = deck.get(x);
 		return card;
 	}
 	

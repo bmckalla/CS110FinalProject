@@ -13,20 +13,20 @@ public class WarFrame extends JFrame {
 	private JButton playCard, quit;
 	private JLabel actionInfo, enemyCard,
 	enemyPlayed, cardPlayed, yourCard, yourLabel, theirLabel;
-	private ImageIcon backCard;
+	private final ImageIcon BACK_OF_CARD = new ImageIcon("back.jpg");
 	private Deck yourDeck, theirDeck;
 	private War war;
 	private final int YOU_WIN = 1,
 			THEY_WIN = 2,
 			TIE = 0;
-	private int yourScore, theirScore;
+	private int yourScore, theirScore, 
+			warCard = 1;
 	
-	public WarFrame(Deck playerDeck, Deck enemyDeck, War warGame) {
-		String backOfCard = "back.jpg";
+	public WarFrame(War warGame) {
 		
 		war = warGame;
-		yourDeck = playerDeck;
-		theirDeck = enemyDeck;
+		yourDeck = warGame.getYourDeck();
+		theirDeck = warGame.getTheirDeck();
 		
 		// Create a panel array with the same layout
 		// as the GridLayout, thus creates empty frames
@@ -61,13 +61,12 @@ public class WarFrame extends JFrame {
 		
 		// Create player panel and add items,
 		// add to southern area
-		backCard = new ImageIcon(backOfCard);
-		yourCard = new JLabel(backCard);
+		yourCard = new JLabel(BACK_OF_CARD);
 		panelHolder[3][1].add(yourCard);
 		
 		// Create enemy panel and add items,
 		// add to northern area
-		enemyCard = new JLabel(backCard);
+		enemyCard = new JLabel(BACK_OF_CARD);
 		panelHolder[0][1].add(enemyCard);
 		
 		// Add label for what to do, add to western area
@@ -75,7 +74,9 @@ public class WarFrame extends JFrame {
 		panelHolder[2][2].add(actionInfo);
 		
 		// Add label for your number of cards and opponents number of cards
+		yourDeck.setSize();
 		yourScore = yourDeck.getSize();
+		theirDeck.setSize();
 		theirScore = theirDeck.getSize();
 		yourLabel = new JLabel("Cards left: " + yourScore);
 		panelHolder[3][0].add(yourLabel);
@@ -97,24 +98,25 @@ public class WarFrame extends JFrame {
 				cardPlayed.setIcon(cardImage);
 				ImageIcon enemyImage = theirDeck.showTop().getCardImg();
 				enemyPlayed.setIcon(enemyImage);
-				if ((war.matchWin(yourDeck, theirDeck)) == YOU_WIN) {
+				if ((war.matchWin()) == YOU_WIN) {
+					resetDeck();
 					winner(yourDeck, theirDeck);
 					actionInfo.setText("You win the round. Play another card.");
+					resetGUI();
 				}
-				else if ((war.matchWin(yourDeck, theirDeck)) == THEY_WIN) {
+				else if ((war.matchWin()) == THEY_WIN) {
+					resetDeck();
 					winner(yourDeck, theirDeck);
-					actionInfo.setText("Enemy wins the round. Play another card."); 
+					actionInfo.setText("The enemy wins the round. Play another card."); 
+					resetGUI();
 				}
-				else if ((war.matchWin(yourDeck, theirDeck)) == TIE) {
+				else if ((war.matchWin()) == TIE) {
 					actionInfo.setText("WAR!");
-					if (war.warPlay(yourDeck, theirDeck) == YOU_WIN) {
-						winner(yourDeck, theirDeck);
-						actionInfo.setText("You win the round. Play another card.");
-					}
-					else if (war.warPlay(yourDeck, theirDeck) == THEY_WIN) {
-						winner(yourDeck, theirDeck);
-						actionInfo.setText("They win the round. Play another card.");
-					}
+					playCard.setEnabled(false);
+					Thread.sleep(4000);
+					war();
+					playCard.setEnabled(true);
+					resetGUI();
 				} //end if
 			} //end try
 			catch (InterruptedException f) {
@@ -132,15 +134,53 @@ public class WarFrame extends JFrame {
 	}
 	
 	public void winner(Deck yourDeck, Deck theirDeck) throws InterruptedException {
-		if (war.winner(yourDeck, theirDeck) == YOU_WIN) {
-			actionInfo.setText("The oppenent is out of cards...");
+		if (war.winner() == YOU_WIN) {
+			actionInfo.setText("The enemy is out of cards...");
 			Thread.sleep(4000);
 			actionInfo.setText("YOU WIN! Thanks for playing!");
 		}
-		else if (war.winner(yourDeck, theirDeck) == THEY_WIN) {
+		else if (war.winner() == THEY_WIN) {
 			actionInfo.setText("You are out of cards...");
 			Thread.sleep(4000);
 			actionInfo.setText("YOU LOSE! Play again!");
 		}
+	}
+	
+	public void war() throws InterruptedException {
+		ImageIcon cardImage = yourDeck.showCard(warCard).getCardImg();
+		cardPlayed.setIcon(cardImage);
+		ImageIcon enemyImage = theirDeck.showCard(warCard).getCardImg();
+		enemyPlayed.setIcon(enemyImage);
+		if (war.warPlay() == YOU_WIN) {
+			warCard = 1;
+			resetDeck();
+			winner(yourDeck, theirDeck);
+			actionInfo.setText("You win the war! Play another card.");
+		}
+		else if (war.warPlay() == THEY_WIN) {
+			warCard = 1;
+			resetDeck();
+			winner(yourDeck, theirDeck);
+			actionInfo.setText("The enemy wins the war! Play another card.");
+		}
+		else if (war.warPlay() == TIE) {
+			actionInfo.setText("ANOTHER WAR!");
+			warCard += 2;
+			war();
+		}
+	}
+	
+	public void resetGUI() {
+		yourDeck.setSize();
+		yourScore = yourDeck.getSize();
+		yourLabel.setText("Cards left: " + yourScore);
+		theirDeck.setSize();
+		theirScore = theirDeck.getSize();
+		theirLabel.setText("Cards left: " + theirScore);
+	}
+	
+	public void resetDeck() {
+		yourDeck = new Deck(war.getYourDeck());
+		theirDeck = new Deck(war.getTheirDeck());
 	}
 }

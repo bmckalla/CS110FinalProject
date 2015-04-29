@@ -10,17 +10,17 @@ public class WarDecks {
 				DECK_SIZE = 52;
 		
 		for (int x = 1; x <= HIGH_RANK; x++) {
-			Card spade = new Card(14, x);
+			WarCard spade = new WarCard(14, x);
 			fullDeck.addCard(spade);
-			Card club = new Card(15, x);
+			WarCard club = new WarCard(15, x);
 			fullDeck.addCard(club);
-			Card heart = new Card(16, x);
+			WarCard heart = new WarCard(16, x);
 			fullDeck.addCard(heart);
-			Card diamond = new Card(17, x);
+			WarCard diamond = new WarCard(17, x);
 			fullDeck.addCard(diamond);
 		}
 		
-		fullDeck.shuffle();
+		 fullDeck.shuffle();
 	    Deck yourDeck = new Deck();
 	    Deck theirDeck = new Deck();
 	    
@@ -29,10 +29,10 @@ public class WarDecks {
 	    	theirDeck.addCard(fullDeck.removeTop());
 	    }
 	    
-	    yourDeck.shuffle();
-		playerDeck = yourDeck;
+	   yourDeck.shuffle();
+		playerDeck = new Deck(yourDeck);
 		theirDeck.shuffle();
-		enemyDeck = theirDeck;
+		enemyDeck = new Deck(theirDeck);
 	}
 	
 	public Deck getYourDeck() {

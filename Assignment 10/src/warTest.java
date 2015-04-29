@@ -1,5 +1,3 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -7,13 +5,14 @@ public class warTest {
 	
 	public static void main(String[] args) {
 		WarDecks deck = new WarDecks();
-		Deck yourDeck = deck.getYourDeck();
-		Deck theirDeck = deck.getTheirDeck();
-		War war = new War();
+		Deck yourDeck = new Deck(deck.getYourDeck());
+		Deck theirDeck = new Deck(deck.getTheirDeck());
+		War war = new War(yourDeck, theirDeck);
 
-		JFrame frame = new WarFrame(yourDeck, theirDeck, war);
+		JFrame frame = new WarFrame(war);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
+		frame.setSize(1200, 1000);
+		frame.validate();
 		frame.setVisible(true);
 	}
 }
